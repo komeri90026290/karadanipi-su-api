@@ -20,12 +20,12 @@ const pool = new Pool({
 app.use(express.json());  // リクエストボディの JSON パースを有効にする
 
 // ユーザーを追加する API
-app.post('/users', async (req, res) => {
-  const { name, email } = req.body;  // リクエストボディから名前とメールアドレスを取得
+app.post('/test', async (req, res) => {
+  const { username,password,height,weight } = req.body;  // リクエストボディから名前とメールアドレスを取得
   try {
     const result = await pool.query(
-      'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', 
-      [name, email]
+      'INSERT INTO test (username, password, height, weight) VALUES ($1, $2, $3, $4) RETURNING *', 
+      [username, password, height, weight]
     );
     return res.status(201).json(result.rows[0]);  // 新しく追加されたユーザーを返す
   } catch (error) {
@@ -35,9 +35,9 @@ app.post('/users', async (req, res) => {
 });
 
 // ユーザー一覧を取得する API
-app.get('/users', async (req, res) => {
+app.get('/test', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM users');
+    const result = await pool.query('SELECT * FROM test');
     return res.status(200).json(result.rows);  // すべてのユーザーを返す
   } catch (error) {
     console.error('Failed to fetch users:', error);
