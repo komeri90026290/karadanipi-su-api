@@ -2,6 +2,8 @@ require('dotenv').config();  // dotenv パッケージを使って環境変数�
 
 const express = require('express');
 const { Pool } = require('pg');  // PostgreSQL 用のパッケージ
+const cors =require('cors');
+
 
 // Express アプリケーションを設定
 const app = express();
@@ -19,7 +21,6 @@ const pool = new Pool({
 
 app.use(express.json());  // リクエストボディの JSON パースを有効にする
 
-const cors =require('cors');
 app.use(cors({
     origin: ['https://karadanipi-su-api.onrender.com', 'http://localhost:3000']
   }));
