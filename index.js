@@ -19,6 +19,10 @@ const pool = new Pool({
 
 app.use(express.json());  // リクエストボディの JSON パースを有効にする
 
+const cors =require('cors');
+app.use(cors({
+    origin: ['https://karadanipi-su-api.onrender.com', 'http://localhost:3000']
+  }));
 // ユーザーを追加する API
 app.post('/test', async (req, res) => {
   const { username,password,height,weight } = req.body;  // リクエストボディから名前とメールアドレスを取得
