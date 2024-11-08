@@ -2,7 +2,6 @@ require('dotenv').config();  // dotenv パッケージを使って環境変数�
 
 const express = require('express');
 const { Pool } = require('pg');  // PostgreSQL 用のパッケージ
-const cors =require('cors');
 
 
 // Express アプリケーションを設定
@@ -21,9 +20,10 @@ const pool = new Pool({
 
 app.use(express.json());  // リクエストボディの JSON パースを有効にする
 
+const cors =require('cors');
 app.use(cors({
-    origin: ['https://karadanipi-su-api.onrender.com', 'http://localhost:3000']
-  }));
+  origin: '*'
+}));
 // ユーザーを追加する API
 app.post('/test', async (req, res) => {
   const { username,password,height,weight } = req.body;  // リクエストボディから名前とメールアドレスを取得
@@ -42,7 +42,7 @@ app.post('/test', async (req, res) => {
 // ユーザー一覧を取得する API
 app.get('/test', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM test');
+    const result = await pool.query('SELECT * FROM test;');
     return res.status(200).json(result.rows);  // すべてのユーザーを返す
   } catch (error) {
     console.error('Failed to fetch users:', error);
