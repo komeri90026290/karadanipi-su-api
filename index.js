@@ -67,6 +67,23 @@ app.post('/login', async (req, res) => {
       return res.status(500).json({ error: 'Failed to login' });    
     }  
   });
+
+  // フードを追加する API
+app.post('/food', async (req, res) => {
+  const { userid,foodid,breakfast,lunch,dinner } = req.body;  // リクエストボディから名前とメールアドレスを取得
+  try {
+    const result = await pool.query(
+      'INSERT INTO food (userid,foodid,breakfast,lunch,dinner) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [userid, foodid, breakfast, lunch, dinner]
+    );
+    return res.status(201).json(result.rows[0]);  // 新しく追加されたユーザーを返す
+  } catch (error) {
+    console.error('Failed to add food:', error);
+    return res.status(500).json({ error: 'Failed to add food' });
+  }
+});
+
+
 // サーバーを起動
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
