@@ -25,11 +25,11 @@ app.use(cors({
   origin: '*'
 }));
 // ユーザーを追加する API
-app.post('/test', async (req, res) => {
+app.post('/users', async (req, res) => {
   const { username,password,height,weight } = req.body;  // リクエストボディから名前とメールアドレスを取得
   try {
     const result = await pool.query(
-      'INSERT INTO test (username, password, height, weight) VALUES ($1, $2, $3, $4) RETURNING *', 
+      'INSERT INTO users (username, password, height, weight) VALUES ($1, $2, $3, $4) RETURNING *', 
       [username, password, height, weight]
     );
     return res.status(201).json(result.rows[0]);  // 新しく追加されたユーザーを返す
@@ -40,9 +40,9 @@ app.post('/test', async (req, res) => {
 });
 
 // ユーザー一覧を取得する API
-app.get('/test', async (req, res) => {
+app.get('/users', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM test;');
+    const result = await pool.query('SELECT * FROM users;');
     return res.status(200).json(result.rows);  // すべてのユーザーを返す
   } catch (error) {
     console.error('Failed to fetch users:', error);
@@ -54,7 +54,7 @@ app.get('/test', async (req, res) => {
 app.post('/login', async (req, res) => {
       const { username, password } = req.body;    
       try {      const result = await pool.query(        
-        'SELECT * FROM test WHERE username = $1 AND password = $2',         
+        'SELECT * FROM users WHERE username = $1 AND password = $2',         
         [username, password]      
       );      
       if (result.rows.length > 0) {        
