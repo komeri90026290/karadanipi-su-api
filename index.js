@@ -68,13 +68,15 @@ app.post('/login', async (req, res) => {
     }  
   });
 
-  // フードを追加する API
+// フードを追加する API
 app.post('/food', async (req, res) => {
-  const { userid,foodid,breakfast,lunch,dinner } = req.body;  // リクエストボディから名前とメールアドレスを取得
+  const { userid,breakfast,lunch,dinner } = req.body;  // リクエストボディから名前とメールアドレスを取得
+    // デバッグ用にリクエストデータを確認
+    console.log("Request Body:", req.body);
   try {
     const result = await pool.query(
-      'INSERT INTO food (userid,foodid,breakfast,lunch,dinner) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [userid, foodid, breakfast, lunch, dinner]
+      'INSERT INTO food (userid,breakfast,lunch,dinner) VALUES ($1, $2, $3, $4) RETURNING *',
+      [userid, breakfast, lunch, dinner]
     );
     return res.status(201).json(result.rows[0]);  // 新しく追加されたユーザーを返す
   } catch (error) {
