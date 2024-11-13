@@ -75,7 +75,7 @@ app.post('/food', async (req, res) => {
     console.log("Request Body:", req.body);
   try {
     const result = await pool.query(
-      'INSERT INTO food (userid,breakfast,lunch,dinner) VALUES ($1, $2, $3, $4) RETURNING *',
+      'INSERT INTO food (userid,breakfast,lunch,dinner) VALUES ($0, $2, $3, $4) RETURNING *',
       [userid, breakfast, lunch, dinner]
     );
     return res.status(201).json(result.rows[0]);  // 新しく追加されたユーザーを返す
