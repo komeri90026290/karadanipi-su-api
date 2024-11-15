@@ -13,7 +13,8 @@ module.exports = (pool) => {
   });
  
   router.put('/:id', async (req, res) => {
-    const { username, password, height, weight,userId,mokuhyou } = req.body;
+    const { username, password, height, weight,mokuhyou } = req.body;
+    const {id} =req.params;
  
     try {
       // 更新する項目を指定してSQLクエリを作成
@@ -26,7 +27,7 @@ module.exports = (pool) => {
           mokuhyou = COALESCE($5, mokuhyou)
          WHERE userid = $6
          RETURNING *`,
-        [username, password, height, weight, userId,mokuhyou]
+        [username, password, height, weight,mokuhyou, id]
       );
  
       // 更新が成功したかチェック
