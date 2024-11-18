@@ -56,6 +56,37 @@ module.exports = (pool) => {
       return res.status(500).json({ error: 'Failed to add user' });
     }
   });
+
+    //新規会員登録新機能
+ 
+    router.post('/add', async (req, res) => {
+      const { userId, height, weight } = req.body;
+   
+      try {
+        // 1. userIdに基づいてユーザー情報を取得
+        const userResult = await pool.query(
+          'SELECT username, password, created_at FROM users WHERE userid = $1',
+          [userId]
+        );
+   
+        if (userResult.rows.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+   
+        const userData = userResult.rows[0];
+   
+        // 2. 新しいテーブルにデータを挿入
+        const insertResult = await pool.query(
+          'INSERT INTO users (userid, username, password, height, weight, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+          [userId, userData.username, userData.password, height, weight, userData.created_at]
+        );
+   
+        return res.status(201).json(insertResult.rows[0]);
+      } catch (error) {
+        console.error('Failed to add data:', error);
+        return res.status(500).json({ error: 'Failed to add data' });
+      }
+    });
  
 // userId に基づいて特定のユーザーを取得
 router.get('/:id', async (req, res) => {
