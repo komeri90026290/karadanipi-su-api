@@ -3,12 +3,12 @@ const router = express.Router();
 
 module.exports = (pool) => {
   router.post('/', async (req, res) => {
-    const { userid, breakfast, lunch, dinner } = req.body;
+    const { userid, breakfast, lunch, dinner, bkcal, lkcal, dkcal } = req.body;
     console.log("Request Body:", req.body);
     try {
       const result = await pool.query(
-        'INSERT INTO food (userid, breakfast, lunch, dinner) VALUES ($1, $2, $3, $4) RETURNING *',
-        [userid, breakfast, lunch, dinner]
+        'INSERT INTO food (userid, breakfast, lunch, dinner, bkcal, lkcal, dkcal) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [userid, breakfast, lunch, dinner, bkcal, lkcal, dkcal]
       );
       return res.status(201).json(result.rows[0]);
     } catch (error) {
