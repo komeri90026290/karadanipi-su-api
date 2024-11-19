@@ -33,25 +33,27 @@ module.exports = (pool) => {
     }
   });
 
-  // トレーニングの追加
-  router.post('/', async (req, res) => {
-    const { userId, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
- 
-    if (!userId || !part, exercise, seconds, reps, sets, totaltimeorreps) {
-      return res.status(400).json({ error: 'userId and detail are required' });
-    }
- 
-    try {
-      const result = await pool.query(
-        'INSERT INTO training (userid, part, exercise, seconds, reps, sets, totaltimeorreps) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-        [userId, [detail]]
-      );
-      return res.status(201).json(result.rows[0]); // 追加されたトレーニングデータを返す
-    } catch (error) {
-      console.error('Failed to add training data:', error);
-      return res.status(500).json({ error: 'Failed to add training data' });
-    }
-  });
+// トレーニングの追加
+router.post('/', async (req, res) => {
+  const { userId, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
 
-  return router;
+  if (!userId || !part || !exercise || !seconds || !reps || !sets || !totaltimeorreps) {
+    return res.status(400).json({
+      error: 'All fields (userId, part, exercise, seconds, reps, sets, totaltimeorreps) are required'
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO training (userid, part, exercise, seconds, reps, sets, totaltimeorreps) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [userId, part, exercise, seconds, reps, sets, totaltimeorreps]
+    );
+    return res.status(201).json(result.rows[0]); // 追加されたトレーニングデータを返す
+  } catch (error) {
+    console.error('Failed to add training data:', error);
+    return res.status(500).json({ error: 'Failed to add training data' });
+  }
+});
+
+return router;
 };
