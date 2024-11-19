@@ -35,15 +35,15 @@ module.exports = (pool) => {
 
   // トレーニングの追加
   router.post('/', async (req, res) => {
-    const { userId, detail } = req.body;
-
-    if (!userId || !detail) {
+    const { userId, part, exercise, seconds, reps, sets } = req.body;
+ 
+    if (!userId || !part, exercise, seconds, reps, sets) {
       return res.status(400).json({ error: 'userId and detail are required' });
     }
-
+ 
     try {
       const result = await pool.query(
-        'INSERT INTO training (userid, detail) VALUES ($1, $2) RETURNING *',
+        'INSERT INTO training (userid, part, exercise, seconds, reps, sets, totaltimeorreps) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
         [userId, [detail]]
       );
       return res.status(201).json(result.rows[0]); // 追加されたトレーニングデータを返す
