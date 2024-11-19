@@ -35,9 +35,9 @@ module.exports = (pool) => {
 
   // トレーニングの追加
   router.post('/', async (req, res) => {
-    const { userId, part, exercise, seconds, reps, sets } = req.body;
+    const { userId, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
  
-    if (!userId || !part, exercise, seconds, reps, sets) {
+    if (!userId || !part, exercise, seconds, reps, sets, totaltimeorreps) {
       return res.status(400).json({ error: 'userId and detail are required' });
     }
  
