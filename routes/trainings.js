@@ -37,19 +37,19 @@ module.exports = (pool) => {
   router.post('/', async (req, res) => {
     const { userId, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
  
-    // // バリデーション: 必須フィールドの確認
-    // if (!userId || !part || !exercise || !sets || (!seconds && !reps) || !totaltimeorreps) {
-    //   return res.status(400).json({
-    //     error: 'Fields userId, part, exercise, and sets are required'
-    //   });
-    // }
+    // バリデーション: 必須フィールドの確認
+    if (!userId || !part || !exercise || !sets || (!seconds && !reps) || !totaltimeorreps) {
+      return res.status(400).json({
+        error: 'Fields userId, part, exercise, and sets are required'
+      });
+    }
  
-    // // seconds または reps のどちらかは必須
-    // if (!seconds && !reps) {
-    //   return res.status(400).json({
-    //     error: 'Either seconds or reps is required'
-    //   });
-    // }
+    // seconds または reps のどちらかは必須
+    if (!seconds && !reps) {
+      return res.status(400).json({
+        error: 'Either seconds or reps is required'
+      });
+    }
  
     try {
       const result = await pool.query(
