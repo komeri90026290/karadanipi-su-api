@@ -35,10 +35,10 @@ module.exports = (pool) => {
  
   // トレーニングの追加
   router.post('/', async (req, res) => {
-    const { userId, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
+    const { userid, part, exercise, seconds, reps, sets, totaltimeorreps } = req.body;
  
     // バリデーション: 必須フィールドの確認
-    if (!userId || !part || !exercise || !sets || (!seconds && !reps) || !totaltimeorreps) {
+    if (!userid || !part || !exercise || !sets || (!seconds && !reps) || !totaltimeorreps) {
       return res.status(400).json({
         error: 'Fields userId, part, exercise, and sets are required'
       });
@@ -54,7 +54,7 @@ module.exports = (pool) => {
     try {
       const result = await pool.query(
         'INSERT INTO training (userid, part, exercise, seconds, reps, sets, totaltimeorreps) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-        [userId, part, exercise, seconds, reps, sets, totaltimeorreps]
+        [userid, part, exercise, seconds, reps, sets, totaltimeorreps]
       );
       return res.status(201).json(result.rows[0]); // 追加されたトレーニングデータを返す
     } catch (error) {
