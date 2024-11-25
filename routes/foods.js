@@ -28,26 +28,7 @@ module.exports = (pool) => {
     }
   });
 
-  /*ここデプロイする*/
-app.get('/foods/:userId', async (req, res) => {
-  const userId = req.params.userId;
- 
-  try {
-      // SQLクエリで朝ごはんを取得
-      const result = await db.query('SELECT breakfast FROM food WHERE user_id = $1 LIMIT 1', [userId]);
- 
-      if (result.rows.length > 0) {
-          res.json({ breakfast: result.rows[0].breakfast });
-          res.json({ lunch: result.rows[0].lunch });
-          res.json({ dinner: result.rows[0].dinner });
-      } else {
-          res.status(404).json({ error: 'ごはんが設定されていません' });
-      }
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'サーバーエラーが発生しました' });
-  }
-});
+
 
   return router;
 };
