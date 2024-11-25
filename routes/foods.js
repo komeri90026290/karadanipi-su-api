@@ -33,7 +33,7 @@ module.exports = (pool) => {
  
   // 特定のユーザーIDに紐づく食品データを取得
   router.get('/:id', async (req, res) => {
-    const { userid } = req.params; // URLパラメータから userid を取得
+    const { userId } = req.params; // URLパラメータから userid を取得
  
     try {
       const result = await pool.query('SELECT * FROM food WHERE userid = $1;', [userId]);
