@@ -37,13 +37,13 @@ module.exports = (pool) => {
  
     try {
       const result = await pool.query(
-        'SELECT breakfast, lunch, dinner FROM foods WHERE userid = $1 LIMIT 1;',
+        'SELECT breakfast, lunch, dinner FROM food WHERE userid = $1 LIMIT 1;',
          [userId]
         );
      
       if (result.rows.length > 0) {
         const { breakfast, lunch, dinner} = result.rows[0]; // 必要なカラムを取得
-        return res.status(200).json({ breakfast,lunch, dinner }); // ユーザーに関連する食品データを返す
+        return res.status(200).json({ breakfast, lunch, dinner }); // ユーザーに関連する食品データを返す
       } else {
         return res.status(404).json({ error: '食品データが見つかりません' }); // データが見つからない場合
       }
