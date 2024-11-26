@@ -4,7 +4,9 @@ const router = express.Router();
 module.exports = (pool) => {
   router.get('/', async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM users;');
+      const result = await pool.query(
+      'SELECT * FROM users ORDER BY created_at DESC LIMIT 1;'
+      );
       return res.status(200).json(result.rows);
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -56,7 +58,7 @@ module.exports = (pool) => {
       return res.status(500).json({ error: 'Failed to add user' });
     }
   });
-
+ 
     //新規会員登録新機能
  
     router.post('/add', async (req, res) => {
