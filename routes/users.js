@@ -4,9 +4,15 @@ const router = express.Router();
 module.exports = (pool) => {
   router.get('/', async (req, res) => {
     try {
-      const result = await pool.query(
-      'SELECT * FROM users ORDER BY created_at DESC LIMIT 1;'
-      );
+      const result = await pool.query(`
+        SELECT u.*
+        FROM users u
+        JOIN (
+            SELECT userid, MAX(created_at) AS latest_created_at
+            FROM users
+            GROUP BY userid
+        ) latest ON u.userid = latest.userid AND u.created_at = latest.latest_created_at;
+      `);
       return res.status(200).json(result.rows);
     } catch (error) {
       console.error('Failed to fetch users:', error);
