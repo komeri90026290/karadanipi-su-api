@@ -42,7 +42,7 @@ module.exports = (pool) => {
  
   // ユーザーの追加
   router.post('/', async (req, res) => {
-    const { username, password, height, weight } = req.body;
+    const { foodid, trainingid, historyid} = req.body;
     try {
       const result = await pool.query(
         'INSERT INTO history (foodid, trainingid, historyid) VALUES ($1, $2, $3) RETURNING *',
@@ -73,6 +73,40 @@ module.exports = (pool) => {
         return res.status(500).json({ error: 'Failed to fetch history' });
     }
 });
+
+router.post('/:id', async (req, res) => {
+    const userId = req.params.userid;
+ 
+    try {
+      // 最新の `created_at` を取得
+      const latestHistory = await pool.query(
+        'SELECT created_at FROM history WHERE userid = $1 ORDER BY created_at DESC LIMIT 1;',
+        [userId]
+      );
+ 
+      const today = new Date().toISOString().split('T')[0]; // 今日の日付（YYYY-MM-DD形式）
+ 
+      if (
+        latestHistory.rows.length > 0 &&
+        new Date(latestHistory.rows[0].created_at).toISOString().split('T')[0] === today
+      ) {
+        // 日付が同じなら、カラムを追加しない
+        console.log(`ユーザーID ${userId}: 今日の履歴は既に存在します`);
+        return res.status(200).json({ message: '今日の履歴は既に存在します' });
+      } else {
+        // 日付が異なる場合、新しい履歴を追加
+        await pool.query(
+          'INSERT INTO history (userid, foodid, trainingid, historyid, created_at) VALUES ($1, NULL, NULL, NULL, NOW());',
+          [userId]
+        );
+        console.log(`ユーザーID ${userId}: 今日の履歴を追加しました`);
+        return res.status(201).json({ message: '新しい履歴を追加しました' });
+      }
+    } catch (error) {
+      console.error('履歴の確認中にエラーが発生しました:', error);
+      return res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    }
+  });
  
  
   return router;
