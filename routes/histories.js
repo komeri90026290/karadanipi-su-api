@@ -96,7 +96,7 @@ router.post('/:id', async (req, res) => {
       } else {
         // 日付が異なる場合、新しい履歴を追加
         await pool.query(
-          'INSERT INTO history (userid, foodid, trainingid, historyid, created_at) VALUES ($1, NULL, NULL, NULL, NOW());',
+          'INSERT INTO history (userid, foodid, trainingid, historyid) VALUES ($1, NULL, NULL, NULL);',
           [userId]
         );
         console.log(`ユーザーID ${userId}: 今日の履歴を追加しました`);
