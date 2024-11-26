@@ -42,7 +42,8 @@ module.exports = (pool) => {
         );
      
       if (result.rows.length > 0) {
-        return res.status(200).json(result.rows); // ユーザーに関連する食品データを返す
+        const breakfastData = result.rows[0].breakfast;
+        return res.status(200).json({breakfast: breakfastData}); // ユーザーに関連する食品データを返す
       } else {
         return res.status(404).json({ error: '食品データが見つかりません' }); // データが見つからない場合
       }
