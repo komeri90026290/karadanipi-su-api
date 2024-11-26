@@ -37,7 +37,7 @@ module.exports = (pool) => {
  
     try {
       const result = await pool.query(
-        'SELECT breakfast FROM foods WHERE userid = $1;',
+        'SELECT *FROM foods WHERE userid = $1;',
          [userId]
         );
      
