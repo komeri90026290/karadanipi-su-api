@@ -75,7 +75,7 @@ module.exports = (pool) => {
 });
 
 router.post('vvv/:id', async (req, res) => {
-    const userId = req.params.userid;
+    const userId = req.params.id;
  
     try {
       // 最新の `created_at` を取得
