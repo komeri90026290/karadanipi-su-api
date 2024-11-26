@@ -37,13 +37,13 @@ module.exports = (pool) => {
  
     try {
       const result = await pool.query(
-        'SELECT *FROM food WHERE userid = $1;',
+        'SELECT breakfast, lunch, dinner FROM foods WHERE userid = $1 LIMIT 1;',
          [userId]
         );
      
       if (result.rows.length > 0) {
-        const breakfastData = result.rows[0].breakfast;
-        return res.status(200).json({breakfast: breakfastData}); // ユーザーに関連する食品データを返す
+        const { breakfast, lunch, dinner} = result.rows[0]; // 必要なカラムを取得
+        return res.status(200).json({ breakfast,lunch, dinner }); // ユーザーに関連する食品データを返す
       } else {
         return res.status(404).json({ error: '食品データが見つかりません' }); // データが見つからない場合
       }
@@ -53,44 +53,6 @@ module.exports = (pool) => {
     }
   });
  
-
-  // app.post('/', async (req, res) => {
-  //   const { userid } = req.body;
-  
-  //   if (!userid) {
-  //     return res.status(400).json({ message: 'userid is required' });
-  //   }
-  
-  //   try {
-  //     // 今日の日付を取得 (YYYY-MM-DD)
-  //     const today = new Date().toISOString().split('T')[0];
-  
-  //     // 重複チェック: 今日すでにデータがあるか確認
-  //     const checkQuery = `
-  //       SELECT * FROM food
-  //       WHERE userid = $1 AND created_date = $2
-  //     `;
-  //     const checkResult = await pool.query(checkQuery, [userid, today]);
-  
-  //     if (checkResult.rows.length > 0) {
-  //       // 既存データがある場合は挿入をスキップ
-  //       return res.status(200).json({ message: 'Data already exists for today', data: checkResult.rows[0] });
-  //     }
-  
-  //     // 新しい空データを挿入
-  //     const insertQuery = `
-  //       INSERT INTO food (userid, breakfast, lunch, dinner, created_at, created_date)
-  //       VALUES ($1, '', '', '', NOW(), $2)
-  //       RETURNING *
-  //     `;
-  //     const insertResult = await pool.query(insertQuery, [userid, today]);
-  
-  //     res.status(201).json({ message: 'Empty data added successfully', data: insertResult.rows[0] });
-  //   } catch (error) {
-  //     console.error('Error adding empty data:', error);
-  //     res.status(500).json({ message: 'Internal server error' });
-  //   }
-  // });
  
  
   return router;
