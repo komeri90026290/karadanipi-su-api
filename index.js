@@ -117,14 +117,16 @@ const usersRoutes = require('./routes/users');
 const loginRoutes = require('./routes/login');
 const foodsRoutes = require('./routes/foods');
 const trainingsRoutes = require('./routes/trainings');
-// const historiesRoutes = require('./routes/histories');
+const historiesRoutes = require('./routes/histories');
+// const traininghistoryRoutes = require('./routes/traininghistory');
 
 // 各ルートファイルをミドルウェアとして使用
 app.use('/users', usersRoutes(pool));
 app.use('/login', loginRoutes(pool));
 app.use('/foods', foodsRoutes(pool));
 app.use('/trainings', trainingsRoutes(pool));
-// app.use('/histories', historiesRoutes(pool));
+app.use('/histories', historiesRoutes(pool));
+// app.use('/traininghistory', traininghistoryRoutes(pool));
 
 // サーバーを起動
 app.listen(port, () => {
