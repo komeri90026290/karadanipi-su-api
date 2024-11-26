@@ -74,7 +74,7 @@ module.exports = (pool) => {
     }
 });
 
-router.post('/:id', async (req, res) => {
+router.post('vvv/:id', async (req, res) => {
     const userId = req.params.userid;
  
     try {
