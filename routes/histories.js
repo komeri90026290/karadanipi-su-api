@@ -13,7 +13,7 @@ module.exports = (pool) => {
   });
  
   router.put('/:id', async (req, res) => {
-    const { foodid, trainingid, historyid } = req.body;
+    const { foodid, traininghistoryid, historyid } = req.body;
     const {id} =req.params;
  
     try {
@@ -21,11 +21,11 @@ module.exports = (pool) => {
       const result = await pool.query(
         `UPDATE history SET
           foodid= COALESCE($1, foodid),
-          trainingid = COALESCE($2, trainingid),
+          traininghistoryid = COALESCE($2, traininghistoryid),
           historyid = COALESCE($3, historyid),
          WHERE userid = $4
          RETURNING *`,
-        [foodid, trainingid, historyid, id]
+        [foodid, traininghistoryid, historyid, id]
       );
  
       // 更新が成功したかチェック
@@ -42,11 +42,11 @@ module.exports = (pool) => {
  
   // ユーザーの追加
   router.post('/', async (req, res) => {
-    const { foodid, trainingid, historyid} = req.body;
+    const { foodid, traininghistoryid, historyid} = req.body;
     try {
       const result = await pool.query(
-        'INSERT INTO history (foodid, trainingid, historyid) VALUES ($1, $2, $3) RETURNING *',
-        [foodid, trainingid, historyid]
+        'INSERT INTO history (foodid, traininghistoryid, historyid) VALUES ($1, $2, $3) RETURNING *',
+        [foodid, traininghistoryid, historyid]
       );
       return res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -96,7 +96,7 @@ router.post('/:id', async (req, res) => {
       } else {
         // 日付が異なる場合、新しい履歴を追加
         await pool.query(
-          'INSERT INTO history (userid, foodid, trainingid) VALUES ($1, NULL, NULL);',
+          'INSERT INTO history (userid, foodid, traininghistoryid) VALUES ($1, NULL, NULL);',
           [userId]
         );
         console.log(`ユーザーID ${userId}: 今日の履歴を追加しました`);
