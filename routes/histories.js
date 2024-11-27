@@ -4,7 +4,7 @@ const router = express.Router();
 module.exports = (pool) => {
 
   // foodid を transfer する API
-app.post('/getfood/:id', async (req, res) => {
+  router.post('/getfood/:id', async (req, res) => {
   const userId = req.params.id;
 
   try {
