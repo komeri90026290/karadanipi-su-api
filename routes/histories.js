@@ -29,9 +29,9 @@ router.post('/getfood/:id', async (req, res) => {
 
       // historyテーブルにfoodidを挿入
       await pool.query(
-          `INSERT INTO history (foodid)
-           VALUES ($1);`,
-          [latestFoodId]
+          `INSERT INTO history (userid, foodid)
+           VALUES ($1, $2);`,
+          [userId,latestFoodId]
       );
 
       res.status(201).json({ message: '最新のfoodidをhistoryテーブルに挿入しました' });
@@ -40,6 +40,8 @@ router.post('/getfood/:id', async (req, res) => {
       res.status(500).json({ error: 'サーバーエラーが発生しました' });
   }
 });
+
+
 
 router.get('/', async (req, res) => {
     try {
