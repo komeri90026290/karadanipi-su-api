@@ -23,7 +23,7 @@ module.exports = (pool) => {
           foodid= COALESCE($1, foodid),
           trainingid = COALESCE($2, trainingid),
           historyid = COALESCE($3, historyid),
-         WHERE userid = $6
+         WHERE userid = $4
          RETURNING *`,
         [foodid, trainingid, historyid, id]
       );
@@ -83,7 +83,7 @@ router.post('/:id', async (req, res) => {
         'SELECT created_at FROM history WHERE userid = $1 ORDER BY created_at DESC LIMIT 1;',
         [userId]
       );
- 
+
       const today = new Date().toISOString().split('T')[0]; // 今日の日付（YYYY-MM-DD形式）
  
       if (
@@ -96,7 +96,7 @@ router.post('/:id', async (req, res) => {
       } else {
         // 日付が異なる場合、新しい履歴を追加
         await pool.query(
-          'INSERT INTO history (userid, foodid, trainingid, historyid) VALUES ($1, NULL, NULL, NULL);',
+          'INSERT INTO history (userid, foodid, trainingid) VALUES ($1, NULL, NULL);',
           [userId]
         );
         console.log(`ユーザーID ${userId}: 今日の履歴を追加しました`);
