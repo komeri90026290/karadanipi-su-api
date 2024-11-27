@@ -27,17 +27,33 @@ router.post('/getfood/:id', async (req, res) => {
           return res.status(400).json({ error: '最新の履歴にfoodidが設定されていません' });
       }
 
-      // historyテーブルにfoodidを挿入
-      await pool.query(
-          `INSERT INTO history (userid, foodid)
-           VALUES ($1, $2);`,
-          [userId,latestFoodId]
-      );
+    // 指定したuseridの最新のhistoryデータを更新
+    const updateResult = await pool.query(
+      `UPDATE history
+       SET foodid = $1
+       WHERE userid = $2
+       AND historyid = (
+         SELECT historyid
+         FROM history
+         WHERE userid = $2
+         ORDER BY created_at DESC
+         LIMIT 1
+       )
+       RETURNING *;`,
+      [latestFoodId, userId]
+    );
 
-      res.status(201).json({ message: '最新のfoodidをhistoryテーブルに挿入しました' });
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
+    }
+
+    res.status(200).json({
+      message: '最新のfoodidをhistoryテーブルの最新データに更新しました',
+      updatedHistory: updateResult.rows[0],
+    });
   } catch (error) {
-      console.error('エラーが発生しました:', error);
-      res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    console.error('エラーが発生しました:', error);
+    res.status(500).json({ error: 'サーバーエラーが発生しました' });
   }
 });
 
