@@ -2,6 +2,54 @@ const express = require('express');
 const router = express.Router();
  
 module.exports = (pool) => {
+
+  // foodid を transfer する API
+app.post('/getfood/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+      // トランザクションの開始
+      await pool.query('BEGIN');
+
+      // historyテーブルから最新のfoodidを取得
+      const historyResult = await pool.query(
+          `SELECT foodid
+           FROM food
+           WHERE userid = $1
+           ORDER BY created_at DESC
+           LIMIT 1;`,
+          [userId]
+      );
+
+      if (historyResult.rows.length === 0) {
+          await pool.query('ROLLBACK');
+          return res.status(404).json({ error: '履歴が見つかりません' });
+      }
+
+      const latestFoodId = historyResult.rows[0].foodid;
+
+      if (!latestFoodId) {
+          await pool.query('ROLLBACK');
+          return res.status(400).json({ error: '最新の履歴にfoodidが設定されていません' });
+      }
+
+      // historyテーブルにfoodidを挿入
+      await pool.query(
+          `INSERT INTO history (foodid)
+           VALUES ($1);`,
+          [latestFoodId,]
+      );
+
+      // トランザクションをコミット
+      await pool.query('COMMIT');
+      res.status(201).json({ message: '最新のfoodidをhistoryテーブルに挿入しました' });
+  } catch (error) {
+      await pool.query('ROLLBACK');
+      console.error('エラーが発生しました:', error);
+      res.status(500).json({ error: 'サーバーエラーが発生しました' });
+  }
+});
+
   router.get('/', async (req, res) => {
     try {
       const result = await pool.query('SELECT * FROM history;');
