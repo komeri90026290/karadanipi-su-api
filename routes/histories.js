@@ -3,29 +3,29 @@ const router = express.Router();
  
 module.exports = (pool) => {
 
-// foodid を transfer する API
+  // foodid を transfer する API
 router.post('/getfood/:id', async (req, res) => {
   const userId = req.params.id;
   try {
-      // historyテーブルから最新のfoodidを取得
-      const historyResult = await pool.query(
-          `SELECT foodid
-           FROM food
-           WHERE userid = $1
-           ORDER BY created_at DESC
-           LIMIT 1;`,
-          [userId]
-      );
+    // foodテーブルから最新のfoodidを取得
+    const foodResult = await pool.query(
+      `SELECT foodid
+       FROM food
+       WHERE userid = $1
+       ORDER BY created_at DESC
+       LIMIT 1;`,
+      [userId]
+    );
 
-      if (historyResult.rows.length === 0) {
-          return res.status(404).json({ error: '履歴が見つかりません' });
-      }
+    if (foodResult.rows.length === 0) {
+      return res.status(404).json({ error: '指定されたユーザーのfoodデータが見つかりません' });
+    }
 
-      const latestFoodId = historyResult.rows[0].foodid;
+    const latestFoodId = foodResult.rows[0].foodid;
 
-      if (!latestFoodId) {
-          return res.status(400).json({ error: '最新の履歴にfoodidが設定されていません' });
-      }
+    if (!latestFoodId) {
+      return res.status(400).json({ error: '最新のfoodデータにfoodidが設定されていません' });
+    }
 
     // 指定したuseridの最新のhistoryデータを更新
     const updateResult = await pool.query(
@@ -56,6 +56,48 @@ router.post('/getfood/:id', async (req, res) => {
     res.status(500).json({ error: 'サーバーエラーが発生しました' });
   }
 });
+
+
+// // foodid を transfer する API
+// router.post('/getfood/:id', async (req, res) => {
+//   const userId = req.params.id;
+//   try {
+//       // historyテーブルから最新のfoodidを取得
+//       const historyResult = await pool.query(
+//           `SELECT foodid
+//            FROM food
+//            WHERE userid = $1
+//            ORDER BY created_at DESC
+//            LIMIT 1;`,
+//           [userId]
+//       );
+
+//       if (historyResult.rows.length === 0) {
+//           return res.status(404).json({ error: '履歴が見つかりません' });
+//       }
+
+//       const latestFoodId = historyResult.rows[0].foodid;
+
+//       if (!latestFoodId) {
+//           return res.status(400).json({ error: '最新の履歴にfoodidが設定されていません' });
+//       }
+
+//       // historyテーブルにfoodidを挿入
+//       await pool.query(
+//         `INSERT INTO history (userid, foodid)
+//          VALUES ($1, $2);`,
+//         [userId,latestFoodId]
+//     );
+
+//     res.status(201).json({ message: '最新のfoodidをhistoryテーブルに挿入しました' });    res.status(200).json({
+//       message: '最新のfoodidをhistoryテーブルの最新データに更新しました',
+//       updatedHistory: updateResult.rows[0],
+//     });
+//   } catch (error) {
+//     console.error('エラーが発生しました:', error);
+//     res.status(500).json({ error: 'サーバーエラーが発生しました' });
+//   }
+// });
 
 
 
