@@ -52,6 +52,28 @@ module.exports = (pool) => {
       return res.status(500).json({ error: 'サーバーエラーが発生しました' }); // サーバーエラーを返す
     }
   });
+
+  router.get('/recent/:id', async (req, res) => {
+    const  userId  = req.params.id;
+    const now = new Date();
+    const resetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    try {
+      const result = await pool.query(
+         'SELECT * FROM food WHERE userid = $1 AND created_at > $2 LIMIT 1;',
+         [userId,resetTime]
+        );
+     
+      if (result.rows.length > 0) {
+        return res.status(200).json(result.rows[0]);
+      } else  {
+        return res.status(404).json(); 
+      }
+    } catch (error) {
+      console.error('Failed to fetch food:', error);
+      return res.status(500).json({ error: 'サーバーエラーが発生しました' }); // サーバーエラーを返す
+    }
+  });
  
  
  
