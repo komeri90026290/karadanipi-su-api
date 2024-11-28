@@ -3,6 +3,61 @@ const router = express.Router();
  
 module.exports = (pool) => {
 
+    // torehisid を transfer する API
+router.post('/gettore/:id', async (req, res) => {
+  const userId = req.params.id;
+  try {
+    // foodテーブルから最新のfoodidを取得
+    const toreResult = await pool.query(
+      `SELECT traininghistoryid
+       FROM traininghistory
+       WHERE userid = $1
+       ORDER BY created_at DESC
+       LIMIT 1;`,
+      [userId]
+    );
+
+    if (toreResult.rows.length === 0) {
+      return res.status(404).json({ error: '指定されたユーザーのトレーニングヒストリーが見つかりません' });
+    }
+
+    const latestToreId = toreResult.rows[0].traininghistoryid;
+
+    if (!latestToreId) {
+      return res.status(400).json({ error: '最新のトレーニングヒストリーにトレーニングヒストリーidが設定されていません' });
+    }
+
+    // 指定したuseridの最新のhistoryデータを更新
+    const updateResult = await pool.query(
+      `UPDATE history
+       SET traininghistoryid = $1
+       WHERE userid = $2
+       AND historyid = (
+         SELECT historyid
+         FROM history
+         WHERE userid = $2
+         ORDER BY created_at DESC
+         LIMIT 1
+       )
+       RETURNING *;`,
+      [latestToreId, userId]
+    );
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
+    }
+
+    res.status(200).json({
+      message: '最新のtoreidをhistoryテーブルの最新データに更新しました',
+      updatedHistory: updateResult.rows[0],
+    });
+  } catch (error) {
+    console.error('エラーが発生しました:', error);
+    res.status(500).json({ error: 'サーバーエラーが発生しました' });
+  }
+});
+
+
   // foodid を transfer する API
 router.post('/getfood/:id', async (req, res) => {
   const userId = req.params.id;
