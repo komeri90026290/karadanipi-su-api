@@ -32,6 +32,24 @@ module.exports = (pool) => {
       return res.status(500).json({ error: 'Failed to fetch training data' });
     }
   });
+  router.get('/userid/:id', async (req, res) => {
+    const userid = req.params.id;
+    try {
+      const result = await pool.query(
+        'SELECT * FROM training WHERE userid = $1',
+        [userid]
+      );
+ 
+      if (result.rows.length > 0) {
+        return res.status(200).json(result.rows[0]); // 一致するトレーニングデータを返す
+      } else {
+        return res.status(404).json({ error: 'Training data not found' }); // データが存在しない場合
+      }
+    } catch (error) {
+      console.error('Failed to fetch training data:', error);
+      return res.status(500).json({ error: 'Failed to fetch training data' });
+    }
+  });
  
   // トレーニングの追加
   router.post('/', async (req, res) => {
