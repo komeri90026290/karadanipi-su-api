@@ -1,44 +1,43 @@
 const express = require('express');
 const router = express.Router();
- 
+
 module.exports = (pool) => {
 
   router.post('/updateheight/:id', async (req, res) => {
     const userId = req.params.id;
-    const { height, weight } = req.body; // リクエストボディからheightとweightを取得
-  
+    const { weight } = req.body; // weightのみリクエストボディから取得
+
     try {
       // 入力値の検証
-      if (height == null && weight == null) {
-        return res.status(400).json({ error: 'heightまたはweightを指定してください' });
+      if (weight == null) {
+        return res.status(400).json({ error: 'weightを指定してください' });
       }
-  
-      // 更新対象のhistoryレコードを特定して更新
+
+      // 更新対象のhistoryレコードを特定してweightを更新
       const updateResult = await pool.query(
         `UPDATE history
          SET 
-           height = COALESCE($1, height), -- 新しいheightがない場合は既存値を保持
-           weight = COALESCE($2, weight)  -- 新しいweightがない場合は既存値を保持
-         WHERE userid = $3
+           weight = $1  -- 新しいweightを更新
+         WHERE userid = $2
          AND historyid = (
            SELECT historyid
            FROM history
-           WHERE userid = $3
+           WHERE userid = $2
            ORDER BY created_at DESC
            LIMIT 1
          )
          RETURNING *;`,
-        [height, weight, userId]
+        [weight, userId]
       );
-  
+
       // レコードが見つからない場合の処理
       if (updateResult.rows.length === 0) {
         return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
       }
-  
+
       // 成功レスポンスを返す
       res.status(200).json({
-        message: '最新のheightとweightをhistoryテーブルの最新データに更新しました',
+        message: '最新のweightをhistoryテーブルの最新データに更新しました',
         updatedHistory: updateResult.rows[0],
       });
     } catch (error) {
@@ -46,7 +45,7 @@ module.exports = (pool) => {
       res.status(500).json({ error: 'サーバーエラーが発生しました' });
     }
   });
-  
+
 
     // torehisid を transfer する API
 router.post('/gettore/:id', async (req, res) => {
