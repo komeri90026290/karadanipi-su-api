@@ -1,7 +1,51 @@
 const express = require('express');
 const router = express.Router();
- 
+
 module.exports = (pool) => {
+
+  router.post('/updateheight/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { weight } = req.body; // weightのみリクエストボディから取得
+
+    try {
+      // 入力値の検証
+      if (weight == null) {
+        return res.status(400).json({ error: 'weightを指定してください' });
+      }
+
+      // 更新対象のhistoryレコードを特定してweightを更新
+      const updateResult = await pool.query(
+        `UPDATE history
+         SET 
+           weight = $1  -- 新しいweightを更新
+         WHERE userid = $2
+         AND historyid = (
+           SELECT historyid
+           FROM history
+           WHERE userid = $2
+           ORDER BY created_at DESC
+           LIMIT 1
+         )
+         RETURNING *;`,
+        [weight, userId]
+      );
+
+      // レコードが見つからない場合の処理
+      if (updateResult.rows.length === 0) {
+        return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
+      }
+
+      // 成功レスポンスを返す
+      res.status(200).json({
+        message: '最新のweightをhistoryテーブルの最新データに更新しました',
+        updatedHistory: updateResult.rows[0],
+      });
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    }
+  });
+
 
     // torehisid を transfer する API
 router.post('/gettore/:id', async (req, res) => {
