@@ -102,6 +102,9 @@ router.post('/gettore/:id', async (req, res) => {
 });
 
 
+
+
+
   // foodid を transfer する API
 router.post('/getfood/:id', async (req, res) => {
   const userId = req.params.id;
@@ -303,6 +306,24 @@ router.post('/:id', async (req, res) => {
     } catch (error) {
       console.error('履歴の確認中にエラーが発生しました:', error);
       return res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    }
+  });
+
+  router.get('/user/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM history WHERE userid = $1',
+            [userId]
+        );
+        if (result.rows.length > 0) {
+            return res.status(200).json(result.rows[0]);  // 一致するユーザーを返す
+        } else {
+            return res.status(404).json({ error: 'User not found' });  // ユーザーが存在しない場合
+        }
+    } catch (error) {
+        console.error('Failed to fetch history:', error);
+        return res.status(500).json({ error: 'Failed to fetch history' });
     }
   });
  
