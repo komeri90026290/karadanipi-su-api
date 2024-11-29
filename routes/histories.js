@@ -313,7 +313,7 @@ router.post('/:id', async (req, res) => {
     const userId = req.params.id;
     try {
         const result = await pool.query(
-            'SELECT * FROM history WHERE userid = $1',
+            'SELECT * FROM history WHERE userid = $1 ORDER BY created_at DESC',
             [userId]
         );
         if (result.rows.length > 0) {
