@@ -119,7 +119,7 @@ const foodsRoutes = require('./routes/foods');
 const trainingsRoutes = require('./routes/trainings');
 const historiesRoutes = require('./routes/histories');
 const traininghistoryRoutes = require('./routes/traininghistories');
-const kakoRoutes = require('./routes/kako');
+
 
 // 各ルートファイルをミドルウェアとして使用
 app.use('/users', usersRoutes(pool));
@@ -128,7 +128,7 @@ app.use('/foods', foodsRoutes(pool));
 app.use('/trainings', trainingsRoutes(pool));
 app.use('/histories', historiesRoutes(pool));
 app.use('/traininghistories', traininghistoryRoutes(pool));
-app.use('/kako', kakoRoutes(pool));
+
 
 // サーバーを起動
 app.listen(port, () => {
