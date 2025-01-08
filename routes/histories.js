@@ -329,7 +329,7 @@ router.get('/', async (req, res) => {
         );
  
         if (result.rows.length > 0) {
-            return res.status(200).json(result.rows[0]);  // 一致するユーザーを返す
+            return res.status(200).json(result.rows);  // 一致するユーザーを返す
         } else {
             return res.status(404).json({ error: 'history not found' });  // ユーザーが存在しない場合
         }
@@ -373,24 +373,6 @@ router.post('/:id', async (req, res) => {
     }
   });
 
-  router.get('/user/:id', async (req, res) => {
-    const userId = req.params.id;
-    try {
-        const result = await pool.query(
-            'SELECT * FROM history WHERE userid = $1 ORDER BY created_at DESC',
-            [userId]
-        );
-        if (result.rows.length > 0) {
-            return res.status(200).json(result.rows[0]);  // 一致するユーザーを返す
-        } else {
-            return res.status(404).json({ error: 'User not found' });  // ユーザーが存在しない場合
-        }
-    } catch (error) {
-        console.error('Failed to fetch history:', error);
-        return res.status(500).json({ error: 'Failed to fetch history' });
-    }
-  });
- 
  
   return router;
 };
