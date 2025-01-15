@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express'); // express モジュールを読み込む
+const router = express.Router(); // express の Router オブジェクトを取得
  
-module.exports = (pool) => {
+module.exports = (pool) => { // このファイルがモジュールとして読み込まれた際に関数をエクスポートする
   // トレーニング一覧を取得
   router.get('/', async (req, res) => {
     try {

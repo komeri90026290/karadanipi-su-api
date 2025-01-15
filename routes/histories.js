@@ -1,3 +1,4 @@
+//ヒストリーは理解できてないから後で見直す
 const express = require('express');
 const router = express.Router();
 

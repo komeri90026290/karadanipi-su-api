@@ -11,75 +11,75 @@ module.exports = (pool) => {
   
     try {
       // foodテーブルから最新のfoodidを取得
-      const foodResult = await pool.query(
-        `SELECT foodid
-         FROM food
-         WHERE userid = $1
-         ORDER BY created_at DESC
-         LIMIT 1;`,
-        [userId]
+      const foodResult = await pool.query( // SQL クエリを実行
+        `SELECT foodid // foodidを取得
+         FROM food // foodテーブルから
+         WHERE userid = $1 // 指定されたユーザーIDの
+         ORDER BY created_at DESC // 作成日時の降順で
+         LIMIT 1;`, // 1件だけ取得
+        [userId] // プレースホルダに指定されたユーザーIDをセット
       );
   
       // 該当するデータが存在しない場合
-      if (foodResult.rows.length === 0) {
-        return res.status(404).json({ error: '指定されたユーザーのfoodデータが見つかりません' });
+      if (foodResult.rows.length === 0) { // 取得した行数が 0 の場合
+        return res.status(404).json({ error: '指定されたユーザーのfoodデータが見つかりません' }); // エラーレスポンスを返す
       }
   
-      const latestFoodId = foodResult.rows[0].foodid;
+      const latestFoodId = foodResult.rows[0].foodid; // 最新の foodid を取得
   
       // breakfast, lunch, dinner を更新
-      const updateResult = await pool.query(
-        `UPDATE food
-         SET 
+      const updateResult = await pool.query( // SQL クエリを実行
+        `UPDATE food // foodテーブルを更新
+         SET  // 更新するカラムを指定
            breakfast = COALESCE($1, breakfast),  -- breakfastが渡されていなければ既存値を保持
            lunch = COALESCE($2, lunch),          -- lunchが渡されていなければ既存値を保持
            dinner = COALESCE($3, dinner)         -- dinnerが渡されていなければ既存値を保持
-         WHERE foodid = $4
-         RETURNING *;`,
-        [breakfast, lunch, dinner, latestFoodId]
+         WHERE foodid = $4 // 指定されたfoodidのデータを更新
+         RETURNING *;`, // 更新後のデータを返す
+        [breakfast, lunch, dinner, latestFoodId] // プレースホルダに指定された値をセット
       );
   
       // 更新されたデータが存在しない場合
-      if (updateResult.rows.length === 0) {
-        return res.status(404).json({ error: '指定されたユーザーのfoodデータが更新されませんでした' });
+      if (updateResult.rows.length === 0) { // 取得した行数が 0 の場合
+        return res.status(404).json({ error: '指定されたユーザーのfoodデータが更新されませんでした' }); // エラーレスポンスを返す
       }
   
       // 成功レスポンスを返す
-      res.status(200).json({
-        message: '最新のfoodテーブルのデータが更新されました',
-        updatedFood: updateResult.rows[0],
+      res.status(200).json({ // ステータスコード 200 で
+        message: '最新のfoodテーブルのデータが更新されました', // メッセージを返す
+        updatedFood: updateResult.rows[0], // 更新されたデータを返す
       });
-    } catch (error) {
-      console.error('エラーが発生しました:', error);
-      res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    } catch (error) { // エラーが発生した場合
+      console.error('エラーが発生しました:', error); // エラーログを出力
+      res.status(500).json({ error: 'サーバーエラーが発生しました' }); // サーバーエラーを返す
     }
   });
   
 
 
-  router.post('/', async (req, res) => {
-    const { userid, breakfast, lunch, dinner } = req.body;
-    console.log("Request Body:", req.body);
+  router.post('/', async (req, res) => { // POST メソッドで /foods にアクセスされた場合
+    const { userid, breakfast, lunch, dinner } = req.body; // リクエストボディから userid, breakfast, lunch, dinner を取得
+    console.log("Request Body:", req.body); // デバッグ用にリクエストデータを確認
     try {
-      const result = await pool.query(
-        'INSERT INTO food (userid, breakfast, lunch, dinner) VALUES ($1, $2, $3, $4) RETURNING *',
-        [userid, breakfast, lunch, dinner]
+      const result = await pool.query( // SQL クエリを実行
+        'INSERT INTO food (userid, breakfast, lunch, dinner) VALUES ($1, $2, $3, $4) RETURNING *', // SQL クエリを実行
+        [userid, breakfast, lunch, dinner] // プレースホルダに値をセット
       );
-      return res.status(201).json(result.rows[0]);
-    } catch (error) {
-      console.error('Failed to add food:', error);
-      return res.status(500).json({ error: 'Failed to add food' });
+      return res.status(201).json(result.rows[0]); // ステータスコード 201 で新しく追加された食品データを返す
+    } catch (error) { // エラーが発生した場合
+      console.error('Failed to add food:', error); // エラーログを出力
+      return res.status(500).json({ error: 'Failed to add food' }); // サーバーエラーを返す
     }
   });
  
  
-  router.get('/', async (req, res) => {
+  router.get('/', async (req, res) => { // GET メソッドで /foods にアクセスされた場合
     try {
-      const result = await pool.query('SELECT * FROM food;');
+      const result = await pool.query('SELECT * FROM food;'); // SQL クエリを実行
       return res.status(200).json(result.rows); // すべての食品データを返す
-    } catch (error) {
-      console.error('Failed to fetch food:', error);
-      return res.status(500).json({ error: 'Failed to fetch food' });
+    } catch (error) { // エラーが発生した場合
+      console.error('Failed to fetch food:', error); // エラーログを出力
+      return res.status(500).json({ error: 'Failed to fetch food' }); // サーバーエラーを返す
     }
   });
  
@@ -88,9 +88,9 @@ module.exports = (pool) => {
     const  userId  = req.params.id; // URLパラメータから userid を取得
  
     try {
-      const result = await pool.query(
-        'SELECT breakfast, lunch, dinner FROM food WHERE userid = $1 LIMIT 1;',
-         [userId]
+      const result = await pool.query( // SQL クエリを実行
+        'SELECT breakfast, lunch, dinner FROM food WHERE userid = $1 LIMIT 1;', // SQL クエリを実行
+         [userId] // プレースホルダに指定されたユーザーIDをセット
         );
      
       if (result.rows.length > 0) {
@@ -105,24 +105,24 @@ module.exports = (pool) => {
     }
   });
 
-  router.get('/recent/:id', async (req, res) => {
-    const  userId  = req.params.id;
-    const now = new Date();
-    const resetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  router.get('/recent/:id', async (req, res) => { // GET メソッドで /foods にアクセスされた場合
+    const  userId  = req.params.id; // URLパラメータから userid を取得
+    const now = new Date(); // 現在時刻を取得
+    const resetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // 今日の 0 時 0 分 0 秒を取得
 
-    try {
-      const result = await pool.query(
-         'SELECT * FROM food WHERE userid = $1 AND created_at > $2 LIMIT 1;',
-         [userId,resetTime]
+    try { 
+      const result = await pool.query( // SQL クエリを実行
+         'SELECT * FROM food WHERE userid = $1 AND created_at > $2 LIMIT 1;', // SQL クエリを実行
+         [userId,resetTime] // プレースホルダに指定されたユーザーIDをセット
         );
      
-      if (result.rows.length > 0) {
-        return res.status(200).json(result.rows[0]);
+      if (result.rows.length > 0) {  // 取得した行数が 0 より大きい場合
+        return res.status(200).json(result.rows[0]); // すべての食品データを返す
       } else  {
-        return res.status(404).json(); 
+        return res.status(404).json();  // データが見つからない場合
       }
     } catch (error) {
-      console.error('Failed to fetch food:', error);
+      console.error('Failed to fetch food:', error); // エラーログを出力
       return res.status(500).json({ error: 'サーバーエラーが発生しました' }); // サーバーエラーを返す
     }
   });
