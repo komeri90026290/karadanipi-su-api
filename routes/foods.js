@@ -14,7 +14,7 @@ module.exports = (pool) => {
       const foodResult = await pool.query( // SQL クエリを実行
         `SELECT foodid 
          FROM food 
-         WHERE userid = 
+         WHERE userid = $1
          ORDER BY created_at DESC 
          LIMIT 1;`, 
         [userId] 
