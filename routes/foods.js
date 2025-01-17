@@ -12,10 +12,10 @@ module.exports = (pool) => {
     try {
       // foodテーブルから最新のfoodidを取得
       const foodResult = await pool.query( // SQL クエリを実行
-        `SELECT foodid // foodidを取得
-         FROM food // foodテーブルから
-         WHERE userid = $1 // 指定されたユーザーIDの
-         ORDER BY created_at DESC // 作成日時の降順で
+        `SELECT foodid -- foodidを取得
+         FROM food -- foodテーブルから
+         WHERE userid = $1 -- 指定されたユーザーIDの
+         ORDER BY created_at DESC -- 作成日時の降順で
          LIMIT 1;`, // 1件だけ取得
         [userId] // プレースホルダに指定されたユーザーIDをセット
       );
@@ -29,12 +29,12 @@ module.exports = (pool) => {
   
       // breakfast, lunch, dinner を更新
       const updateResult = await pool.query( // SQL クエリを実行
-        `UPDATE food // foodテーブルを更新
-         SET  // 更新するカラムを指定
+        `UPDATE food --foodテーブルを更新
+         SET  --更新するカラムを指定
            breakfast = COALESCE($1, breakfast),  
            lunch = COALESCE($2, lunch),          
            dinner = COALESCE($3, dinner)         
-         WHERE foodid = $4 // 指定されたfoodidのデータを更新
+         WHERE foodid = $4 -- 指定されたfoodidのデータを更新
          RETURNING *;`, // 更新後のデータを返す
         [breakfast, lunch, dinner, latestFoodId] // プレースホルダに指定された値をセット
       );
