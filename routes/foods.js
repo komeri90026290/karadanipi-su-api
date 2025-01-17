@@ -89,7 +89,7 @@ module.exports = (pool) => {
  
     try {
       const result = await pool.query( // SQL クエリを実行
-        'SELECT breakfast, lunch, dinner FROM food WHERE userid = $1 ORDER BY created_at DESC LIMIT 1;', // SQL クエリを実行
+        'SELECT breakfast, lunch, dinner, created_at FROM food WHERE userid = $1 ORDER BY created_at DESC LIMIT 1;', // SQL クエリを実行
          [userId] // プレースホルダに指定されたユーザーIDをセット
         );
      
