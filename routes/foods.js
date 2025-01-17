@@ -31,9 +31,9 @@ module.exports = (pool) => {
       const updateResult = await pool.query( // SQL クエリを実行
         `UPDATE food // foodテーブルを更新
          SET  // 更新するカラムを指定
-           breakfast = COALESCE($1, breakfast),  -- breakfastが渡されていなければ既存値を保持
-           lunch = COALESCE($2, lunch),          -- lunchが渡されていなければ既存値を保持
-           dinner = COALESCE($3, dinner)         -- dinnerが渡されていなければ既存値を保持
+           breakfast = COALESCE($1, breakfast),  
+           lunch = COALESCE($2, lunch),          
+           dinner = COALESCE($3, dinner)         
          WHERE foodid = $4 // 指定されたfoodidのデータを更新
          RETURNING *;`, // 更新後のデータを返す
         [breakfast, lunch, dinner, latestFoodId] // プレースホルダに指定された値をセット
