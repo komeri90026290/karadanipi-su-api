@@ -111,6 +111,32 @@ router.get('/:id/:offset', async (req, res) => {
     }
   });
 
+  router.get('/getallweights/:id', async (req, res) => {
+    const userId = req.params.id;
+    
+    try {
+      // 指定されたユーザーの全 weight データを取得
+      const weightResult = await pool.query(
+        `SELECT weight, created_at
+         FROM history
+         WHERE userid = $1
+         ORDER BY created_at ASC;`,
+        [userId]
+      );
+  
+      if (weightResult.rows.length === 0) {
+        return res.status(404).json({ error: '指定されたユーザーの weight データが見つかりません' });
+      }
+  
+      res.status(200).json({
+        message: 'すべての weight データを取得しました',
+        weights: weightResult.rows,
+      });
+    } catch (error) {
+      console.error('エラーが発生しました:', error);
+      res.status(500).json({ error: 'サーバーエラーが発生しました' });
+    }
+  });
 
     // torehisid を transfer する API
 router.post('/gettore/:id', async (req, res) => {
