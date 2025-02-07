@@ -119,7 +119,7 @@ router.get('/:id/:offset', async (req, res) => {
 
         // 指定されたユーザーの全 weight データを取得
         const weightResult = await pool.query(
-            `SELECT weight, created_at  -- created_at を追加
+            `SELECT weight, created_at  
              FROM history
              WHERE userid = $1
              ORDER BY created_at ASC;`,
