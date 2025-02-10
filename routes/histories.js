@@ -115,7 +115,7 @@ router.get('/:id/:offset', async (req, res) => {
     const userId = req.params.id;
     
     try {
-        console.log("リクエストID:", userId); // ← ユーザーIDが取得できているか確認
+        console.log("AリクエストID:", userId); // ← ユーザーIDが取得できているか確認
 
         // 指定されたユーザーの全 weight データを取得
         const weightResult = await pool.query(
@@ -126,7 +126,7 @@ router.get('/:id/:offset', async (req, res) => {
             [userId]
         );
 
-        console.log("取得データ:", weightResult.rows); // ← データが取れているか確認
+        console.log("B取得データ:", weightResult.rows); // ← データが取れているか確認
 
         if (weightResult.rows.length === 0) {
             console.log("データなし: ユーザーID", userId);
