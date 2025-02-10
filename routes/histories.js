@@ -112,6 +112,7 @@ router.get('/:id/:offset', async (req, res) => {
   });
 
   router.get('/getallweights/:id', async (req, res) => {
+    console.log("Vユーザーネーム", req);
     const userId = req.params.id;
     
     try {
