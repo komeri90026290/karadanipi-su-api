@@ -111,8 +111,6 @@ router.get('/:id/:offset', async (req, res) => {
     }
   });
 
-  
-
 
     // torehisid を transfer する API
 router.post('/gettore/:id', async (req, res) => {
