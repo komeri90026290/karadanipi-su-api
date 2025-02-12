@@ -119,6 +119,7 @@ const foodsRoutes = require('./routes/foods');
 const trainingsRoutes = require('./routes/trainings');
 const historiesRoutes = require('./routes/histories');
 const traininghistoryRoutes = require('./routes/traininghistories');
+const vvvRoutes = require('./routes/vvv');
 
 
 // 各ルートファイルをミドルウェアとして使用
@@ -128,6 +129,7 @@ app.use('/foods', foodsRoutes(pool));
 app.use('/trainings', trainingsRoutes(pool));
 app.use('/histories', historiesRoutes(pool));
 app.use('/traininghistories', traininghistoryRoutes(pool));
+app.use('/vvv', vvvRoutes(pool));
 
 
 // サーバーを起動
