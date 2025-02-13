@@ -20,10 +20,7 @@ module.exports = (pool) => {
         [userId] 
       );
   
-      // 該当するデータが存在しない場合
-      if (foodResult.rows.length === 0) { // 取得した行数が 0 の場合
-        return res.status(404).json({ error: '指定されたユーザーのfoodデータが見つかりません' }); // エラーレスポンスを返す
-      }
+    
   
       const latestFoodId = foodResult.rows[0].foodid; // 最新の foodid を取得
   

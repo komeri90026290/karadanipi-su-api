@@ -126,9 +126,7 @@ router.post('/gettore/:id', async (req, res) => {
       [userId]
     );
 
-    if (toreResult.rows.length === 0) {
-      return res.status(404).json({ error: '指定されたユーザーのトレーニングヒストリーが見つかりません' });
-    }
+
 
     const latestToreId = toreResult.rows[0].traininghistoryid;
 
