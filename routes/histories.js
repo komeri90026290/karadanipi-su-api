@@ -95,10 +95,7 @@ router.get('/:id/:offset', async (req, res) => {
         [weight, userId]
       );
 
-      // レコードが見つからない場合の処理
-      if (updateResult.rows.length === 0) {
-        return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
-      }
+
 
       // 成功レスポンスを返す
       res.status(200).json({
@@ -150,9 +147,6 @@ router.post('/gettore/:id', async (req, res) => {
       [latestToreId, userId]
     );
 
-    if (updateResult.rows.length === 0) {
-      return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
-    }
 
     res.status(200).json({
       message: '最新のtoreidをhistoryテーブルの最新データに更新しました',
@@ -182,9 +176,7 @@ router.post('/getfood/:id', async (req, res) => {
       [userId]
     );
 
-    if (foodResult.rows.length === 0) {
-      return res.status(404).json({ error: '指定されたユーザーのfoodデータが見つかりません' });
-    }
+
 
     const latestFoodId = foodResult.rows[0].foodid;
 
@@ -208,9 +200,7 @@ router.post('/getfood/:id', async (req, res) => {
       [latestFoodId, userId]
     );
 
-    if (updateResult.rows.length === 0) {
-      return res.status(404).json({ error: '指定されたユーザーのhistoryデータが見つかりません' });
-    }
+
 
     res.status(200).json({
       message: '最新のfoodidをhistoryテーブルの最新データに更新しました',

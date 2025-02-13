@@ -36,10 +36,7 @@ module.exports = (pool) => {
          [breakfast, lunch, dinner, latestFoodId] 
       );
   
-      // 更新されたデータが存在しない場合
-      if (updateResult.rows.length === 0) { // 取得した行数が 0 の場合
-        return res.status(404).json({ error: '指定されたユーザーのfoodデータが更新されませんでした' }); // エラーレスポンスを返す
-      }
+
   
       // 成功レスポンスを返す
       res.status(200).json({ // ステータスコード 200 で

@@ -20,10 +20,7 @@ module.exports = (pool) => {
     
             console.log("取得データ:", weightResult.rows); // ← データが取れているか確認
     
-            if (weightResult.rows.length === 0) {
-                console.log("データなし: ユーザーID", userId);
-                return res.status(404).json({ error: '指定されたユーザーの weight データが見つかりません' });
-            }
+
     
             res.status(200).json({
                 message: 'すべての weight データを取得しました',
